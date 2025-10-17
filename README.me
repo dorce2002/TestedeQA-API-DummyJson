@@ -1,0 +1,44 @@
+#  P2: Seja QA por um dia (Testes na API DummyJSON)
+
+## 1. Integrantes
+
+Guilherme Dorce de Britto RA:1991866
+
+Thiago Tsuyoshi Okada Aoki RA: 2002282
+
+Rodrigo Shinji Yamashita RA: 2001443
+
+## 2. Visão Geral do Projeto
+
+Este projeto contém a suíte de testes automatizados em Cypress para a API de testes **DummyJSON** (https://dummyjson.com/docs). O objetivo foi validar o comportamento dos *endpoints* conforme os requisitos do trabalho, agindo como um QA profissional ao depurar, questionar e documentar falhas na API.
+
+---
+
+## 3. Exercícios Concluídos e Análise de QA
+
+### 3.1. Exercício 1: GET - Produtos (`/products`)
+
+**Requisitos Implementados:**
+* Validação da lista de produtos e estrutura básica dos campos obrigatórios.
+* Verificação do parâmetro `limit=5`, garantindo que apenas 5 itens são retornados.
+* Validação de campos essenciais (*id, title, price, etc.*).
+
+#### Falhas e Comportamentos Inesperados Encontrados (Documentação de QA)
+
+Falhas encontrada:
+| **Inconsistência de Esquema | O campo `'brand'` (Marca) é um dado comum em produtos, mas está **ausente em múltiplos registros** (confirmado no ID 16, entre outros). Isso viola o princípio de um esquema de dados consistente.
+| **Conclusão de QA** | Essa inconsistência sugere que a API não aplica o esquema de forma rigorosa ou que o campo `brand` é opcional, sem que isso esteja documentado. O teste foi adaptado para **aceitar a ausência** do campo, validando-o apenas quando ele existe, mas a falha estrutural foi documentada.
+
+### 3.2. Exercício 2: GET - Usuários (`/users`)
+
+**Requisitos Implementados:**
+* Validação da lista de usuários e estrutura básica.
+* Verificação da busca por ID válido (ex: `/users/1`), garantindo que retorna um único objeto.
+* Teste de erro ao buscar por ID inexistente (ex: `/users/9999`).
+
+#### Falhas e Comportamentos Inesperados Encontrados (Documentação de QA)
+
+    **Nenhuma Falha Encontrada** | O comportamento da API foi conforme o esperado para todos os requisitos.
+    **Comportamento Validado** | A busca por um usuário inexistente retorna o `Status Code 404` (`Not Found`) com uma mensagem de erro clara, o que é um tratamento de erro correto e robusto para APIs REST.
+
+---
