@@ -50,4 +50,5 @@ describe('API de Produtos - GET /products', () => {
                 expect(response.body.limit).to.eq(limitValue);
             });
     });
+
 });
