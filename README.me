@@ -41,60 +41,26 @@ Falhas encontrada:
     **Nenhuma Falha Encontrada** | O comportamento da API foi conforme o esperado para todos os requisitos.
     **Comportamento Validado** | A busca por um usuário inexistente retorna o `Status Code 404` (`Not Found`) com uma mensagem de erro clara, o que é um tratamento de erro correto e robusto para APIs REST.
 
----
+3.3. Exercício 3: POST - Adicionar Item (/products/add)
+Requisitos Implementados:
 
-# Relatório de QA - DELETE /products/:id
+Envio de POST com dados válidos e validação da resposta (status 201).
 
-## 5.1 Exercício 3: DELETE - Produto Existente (/products/:id)
+Teste de POST com dados inválidos (corpo da requisição vazio) e verificação do tratamento de erro.
 
-**Requisitos Implementados:**
+Falhas e Comportamentos Inesperados Encontrados (Documentação de QA)
+| Falha Crítica de Validação | Ao tentar adicionar um produto via POST com um corpo de requisição vazio ({}), a API retorna o status code 201 Created e um novo id, simulando o sucesso. | Conclusão de QA | O comportamento é uma falha grave, pois a API não impõe regras de negócio básicas (campos obrigatórios como title e price), permitindo a criação de recursos vazios. O ideal seria retornar 400 Bad Request ou 422 Unprocessable Entity.
 
-- Validação do método DELETE, garantindo que o produto é removido corretamente.
-- Verificação de resposta com status HTTP 200.
-- Confirmação da presença dos campos principais de exclusão:
-  - `id` (correto conforme o produto solicitado)
-  - `isDeleted: true`
-  - `deletedOn` (timestamp da deleção)
+3.4. Exercício 4: PUT/PATCH - Atualizar Item (/products/1)
+Requisitos Implementados:
 
-**Falhas e Comportamentos Inesperados Encontrados:**
+Teste de PUT (atualização completa) e PATCH (atualização parcial), garantindo que o retorno reflete a alteração.
 
-- **Ausência de Mensagem de Confirmação:**  
-  A API não retorna um campo textual (ex: `"message": "Product deleted successfully"`) confirmando a exclusão. Apenas sinaliza `isDeleted: true`, o que pode gerar ambiguidade em validações automatizadas.
+Teste de atualização com envio de campo não mapeado/inválido.
 
-- **Retorno Completo do Objeto:**  
-  O endpoint retorna todos os detalhes do produto deletado (preço, categoria, marca etc.), o que não é uma prática comum em endpoints de exclusão. Geralmente, retorna-se apenas status ou metadados mínimos.
+Falhas e Comportamentos Inesperados Encontrados (Documentação de QA)
+| Falha de Validação de Schema (Tolerância Excessiva) | Ao enviar campos que não existem no esquema da API (Ex: campoInvalido), a API retorna 200 OK (Sucesso) e simplesmente ignora o campo. | Conclusão de QA | APIs confiáveis deveriam rejeitar (com 400 Bad Request) requisições com campos irreconhecíveis para alertar o cliente sobre um possível erro de digitação ou integração. A tolerância excessiva da DummyJSON mascara possíveis falhas de desenvolvimento do lado do consumidor da API.
 
-**Conclusão de QA:**
 
-- O endpoint DELETE `/products/:id` executa corretamente a exclusão e mantém consistência no status HTTP e na marcação `isDeleted`.
-- Contudo, o retorno completo do objeto indica um comportamento mais voltado a simulação (mock API) do que uma operação real de deleção.
-- O teste foi considerado bem-sucedido, mas com ressalva quanto ao design de resposta da API.
 
 ---
-
-## 5.2 Exercício 3: DELETE - Produto Inexistente (/products/:id)
-
-**Requisitos Implementados:**
-
-- Validação do método DELETE para um ID de produto que não existe.
-- Verificação do status HTTP retornado (404).
-- Confirmação da presença da mensagem de erro adequada:
-  ```json
-  {
-    "message": "Product with id '9999' not found"
-  }
-Falhas e Comportamentos Inesperados Encontrados:
-
-Nenhuma falha crítica encontrada.
-A API se comportou conforme esperado ao tentar excluir um produto inexistente.
-
-Observação de consistência:
-O endpoint retorna uma mensagem clara de erro (message) e o status HTTP correto (404), facilitando validações automatizadas. Representa melhoria em relação ao teste com ID existente, onde o retorno do objeto completo pode gerar ambiguidade.
-
-Conclusão de QA:
-
-O endpoint DELETE /products/:id trata corretamente a tentativa de exclusão de produtos inexistentes, retornando status HTTP 404 e uma mensagem de erro descritiva.
-
-O teste foi considerado bem-sucedido e segue boas práticas de API REST.
-
-Recomenda-se revisar o comportamento do endpoint para produtos existentes para consistência com este padrão (retornar apenas metadados mínimos ou uma mensagem textual clara).
