@@ -42,7 +42,27 @@ Falhas encontrada:
     **Comportamento Validado** | A busca por um usuário inexistente retorna o `Status Code 404` (`Not Found`) com uma mensagem de erro clara, o que é um tratamento de erro correto e robusto para APIs REST.
 
 ---
+3.3. Exercício 3: POST - Adicionar Item (/products/add)
+Requisitos Implementados:
 
+Envio de POST com dados válidos e validação da resposta (status 201).
+
+Teste de POST com dados inválidos (corpo da requisição vazio) e verificação do tratamento de erro.
+
+Falhas e Comportamentos Inesperados Encontrados (Documentação de QA)
+| Falha Crítica de Validação | Ao tentar adicionar um produto via POST com um corpo de requisição vazio ({}), a API retorna o status code 201 Created e um novo id, simulando o sucesso. | Conclusão de QA | O comportamento é uma falha grave, pois a API não impõe regras de negócio básicas (campos obrigatórios como title e price), permitindo a criação de recursos vazios. O ideal seria retornar 400 Bad Request ou 422 Unprocessable Entity.
+
+4.1. Exercício 4: PUT/PATCH - Atualizar Item (/products/1)
+Requisitos Implementados:
+
+Teste de PUT (atualização completa) e PATCH (atualização parcial), garantindo que o retorno reflete a alteração.
+
+Teste de atualização com envio de campo não mapeado/inválido.
+
+Falhas e Comportamentos Inesperados Encontrados (Documentação de QA)
+| Falha de Validação de Schema (Tolerância Excessiva) | Ao enviar campos que não existem no esquema da API (Ex: campoInvalido), a API retorna 200 OK (Sucesso) e simplesmente ignora o campo. | Conclusão de QA | APIs confiáveis deveriam rejeitar (com 400 Bad Request) requisições com campos irreconhecíveis para alertar o cliente sobre um possível erro de digitação ou integração. A tolerância excessiva da DummyJSON mascara possíveis falhas de desenvolvimento do lado do consumidor da API.
+
+---
 # Relatório de QA - DELETE /products/:id
 
 ## 5.1 Exercício 3: DELETE - Produto Existente (/products/:id)
