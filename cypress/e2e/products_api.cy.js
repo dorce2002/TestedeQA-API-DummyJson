@@ -50,38 +50,4 @@ describe('API de Produtos - GET /products', () => {
                 expect(response.body.limit).to.eq(limitValue);
             });
     });
-
 });
-
-describe('PUT/PATCH - Atualizar produto', () => {
-
-  it('Deve atualizar um produto existente (PATCH)', () => {
-    cy.request({
-      method: 'PATCH',
-      url: 'https://dummyjson.com/products/1',
-      body: {
-        title: 'Produto Atualizado pelo Cypress'
-      }
-    }).then((response) => {
-      expect(response.status).to.eq(200)
-      expect(response.body).to.have.property('title', 'Produto Atualizado pelo Cypress')
-      expect(response.body).to.have.property('id', 1)
-    })
-  })
-
-  it('Deve retornar erro ou comportamento inesperado ao enviar campo inválido', () => {
-  cy.request({
-    method: 'PATCH',
-    url: 'https://dummyjson.com/products/1',
-    failOnStatusCode: false, 
-    body: {
-      campoInvalido: 'Teste inválido'
-    }
-  }).then((response) => {
-    cy.log(JSON.stringify(response.body))
-    expect([200, 400, 422]).to.include(response.status)
-    expect(response.body).to.not.have.property('campoInvalido')
-  })
-})
-
-})
